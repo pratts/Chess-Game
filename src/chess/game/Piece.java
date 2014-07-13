@@ -16,8 +16,8 @@ public class Piece
 		// TODO Auto-generated constructor stub
 	}
 	
-	public String getPiece(int i,int j)
+	public String getPiece()
 	{
-		return piece+":"+i+""+j;
+		return piece;
 	}
 }
