@@ -12,6 +12,7 @@ public class Board extends JPanel
 {
 	private static final long serialVersionUID = 3684752432733243385L;
 	Square square[][]=new Square[8][8];
+	Piece pieceinfo[][]=new Piece[8][8];
 	static String url="/home/prateek/codes/workspace/Chess-Game/src/chess/images/";
 	static String images[][]={
 			{"bp.gif","bn.gif","bb.gif","br.gif","bq.gif","bk.gif"},
@@ -35,11 +36,16 @@ public class Board extends JPanel
 				square[i][j]=new Square(i,j,this);
 				
 				int color=Board_Default.COLOR_POSITION[i][j];
+				
 				if(color!=Board_Default.EMPTY)
 				{
 					int piece=Board_Default.PIECE_DEFAULT[i][j];
-					//System.out.println(color+":"+piece);
 					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
+					pieceinfo[i][j]=new Piece(images[color][piece],i,j);
+				}
+				else
+				{
+					pieceinfo[i][j]=new Piece(null,i,j);
 				}
 				boardpanel.add(square[i][j]);
 			}
@@ -49,6 +55,11 @@ public class Board extends JPanel
 		
 		createLabel(boardpanel);
 		add(boardpanel);
+	}
+	
+	public void selected(int x,int y)
+	{
+		System.out.println(pieceinfo[x][y].getPiece().substring(0, 2));
 	}
 	
 	protected void createLabel(JPanel panel)
