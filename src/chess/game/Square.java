@@ -17,9 +17,11 @@ public class Square extends JPanel implements MouseListener
 	JLabel label;
 	Board board;
 	boolean mousein=false;
+	Piece piece;
 	
 	Square(int x,int y,Board board)
 	{
+		piece=new Piece();
 		this.x=x;
 		this.y=y;
 		this.board=board;
@@ -59,7 +61,7 @@ public class Square extends JPanel implements MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		board.selected(x,y);
 	}
 
 	@Override
