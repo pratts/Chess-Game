@@ -23,6 +23,7 @@ public class Chess
 	private JButton reset,close;		//reset button sets up board again,close button closes the window
 	private JLabel status;				//label to show game status
 	private JPanel top,mid,bottom;		//various panels to contain different window components
+	Board board;
 	
 	//Chess constructor to initialize all the window components and add them to the window.
 	Chess()
@@ -55,6 +56,12 @@ public class Chess
 		status=new JLabel("Game starting");
 		bottom.setLayout(new FlowLayout(FlowLayout.CENTER));
 		bottom.add(status);
+	
+		//Middle panel that contains the chess board
+		Board.loadImages();
+		mid=new JPanel();
+		board=new Board(this);
+		mid.add(board);
 	}
 	
 	//The createGui method is used to define various game window settings
@@ -63,6 +70,7 @@ public class Chess
 		frame.setLayout(new BorderLayout());
 		frame.add(BorderLayout.NORTH,top);
 		frame.add(BorderLayout.SOUTH,bottom);
+		frame.add(BorderLayout.CENTER,mid);
 		
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
