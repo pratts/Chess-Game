@@ -1,3 +1,8 @@
+/*
+ * Board.java
+ * This class is used to setup the game board.
+ * Whenever any square is clicked,an appropriate action is taken accordingly.
+ */
 package chess.game;
 
 import java.awt.GridLayout;
@@ -11,14 +16,14 @@ import javax.swing.JPanel;
 public class Board extends JPanel
 {
 	private static final long serialVersionUID = 3684752432733243385L;
-	Square square[][]=new Square[8][8];
-	Piece pieceinfo[][]=new Piece[8][8];
-	static String url="/home/prateek/codes/workspace/Chess-Game/src/chess/images/";
-	static String images[][]={
+	Square square[][]=new Square[8][8];													//An 8*8 array to store each square's values
+	Piece pieceinfo[][]=new Piece[8][8];												//An 8*8 array to store the piece value on each square
+	static String url=System.getProperty("user.dir")+"/src/chess/images/";				//Default folder to keep piece icons
+	static String images[][]={															//Array to store each piece file's value accordingly
 			{"bp.gif","bn.gif","bb.gif","br.gif","bq.gif","bk.gif"},
 			{"wp.gif","wn.gif","wb.gif","wr.gif","wq.gif","wk.gif"}
 	};
-	static Image imageurl[][]=new Image[2][6];
+	static Image imageurl[][]=new Image[2][6];											//imageurl will store the location of each image
 	
 	Board(Chess chess)
 	{		
@@ -57,11 +62,13 @@ public class Board extends JPanel
 		add(boardpanel);
 	}
 	
+	//Execute this function every time a square is clicked.
 	public void selected(int x,int y)
 	{
 		System.out.println(pieceinfo[x][y].getPiece().substring(0, 2));
 	}
 	
+	//createLabel function is used to make top and bottom 'a' to 'z' labels on the board
 	protected void createLabel(JPanel panel)
 	{
 		panel.add(new JPanel());
@@ -72,14 +79,18 @@ public class Board extends JPanel
 		panel.add(new JPanel());
 	}
 	
+	//createTag function will print 'a' to 'z' or '1' to '8' on the outer labels.
 	protected String createTag(int temp,boolean alpha)
 	{
+		//To print 'a' to 'z'
 		if(alpha)
 			return (new Character((char) ('a' + temp))).toString();
+		//To print '1' to '8'
 	    else
 	        return Integer.toString(8 - temp);
 	}
 	
+	//TagLabel is an inner class that is used to make label at each square.
 	class TagLabel extends JLabel
 	{
 		private static final long serialVersionUID = -7496696142258573868L;
@@ -91,6 +102,8 @@ public class Board extends JPanel
 		}
 	}
 	
+	
+	//loadImages function will store the absolute location of each piece in imageurl array
 	static void loadImages()
 	{
 		for(int i=0;i<2;i++)
