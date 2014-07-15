@@ -37,7 +37,7 @@ public class Chess
 		reset.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent ae)
 			{
-				//resetgame();
+				reset();
 			}
 		});
 		top.add(reset);
@@ -76,6 +76,11 @@ public class Chess
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+	}
+	
+	protected void reset()
+	{
+		board.resetboard();
 	}
 	
 	protected void setStatus(String label)
