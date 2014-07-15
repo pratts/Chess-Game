@@ -24,6 +24,7 @@ public class Chess
 	private JLabel status;				//label to show game status
 	private JPanel top,mid,bottom;		//various panels to contain different window components
 	Board board;
+	static Chess chess;
 	
 	//Chess constructor to initialize all the window components and add them to the window.
 	Chess()
@@ -77,13 +78,18 @@ public class Chess
 		frame.setVisible(true);
 	}
 	
+	protected void setStatus(String label)
+	{
+		status.setText(label);
+	}
+	
 	public static void main(String[] args) 
 	{
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run()
 			{
 				System.out.println(System.getProperty("user.dir"));
-				Chess chess=new Chess();
+				chess=new Chess();
 				chess.createGui();
 			}
 		});
