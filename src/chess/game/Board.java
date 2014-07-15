@@ -133,10 +133,6 @@ public class Board extends JPanel
 		Game_Board.Board[fromx][fromy]=Game_Board.Board[tox][toy];
 		Game_Board.Board[tox][toy]=s;
 		
-		s=Game_Board.Piece[fromx][fromy];
-		Game_Board.Piece[fromx][fromy]=Game_Board.Piece[tox][toy];
-		Game_Board.Piece[tox][toy]=s;
-		
 		s=pieceinfo[fromx][fromy].getPiece();
 		pieceinfo[fromx][fromy].setPiece(null);
 		pieceinfo[tox][toy].setPiece(s);
@@ -188,6 +184,32 @@ public class Board extends JPanel
 				//System.out.println(url+images[i][j]);
 				imageurl[i][j]=Toolkit.getDefaultToolkit().createImage(url+images[i][j]);
 			}
+		}
+	}
+	
+	protected void resetboard()
+	{
+		System.out.println("Reset");
+		for(int i=0;i<8;i++)
+		{
+			for(int j=0;j<8;j++)
+			{
+				int color=Board_Default.COLOR_POSITION[i][j];
+				int piece=Board_Default.PIECE_DEFAULT[i][j];
+				if(piece!=Board_Default.EMPTY)
+				{
+					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
+					pieceinfo[i][j].setPiece(images[color][piece].substring(0, 2));
+				}
+				else
+				{
+					square[i][j].setIcon(null);
+					pieceinfo[i][j].setPiece(null);
+				}
+				Game_Board.Board[i][j]=color+""+piece;
+				System.out.print(Game_Board.Board[i][j]+" ");
+			}
+			System.out.println();
 		}
 	}
 }
