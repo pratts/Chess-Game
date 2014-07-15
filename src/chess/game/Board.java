@@ -82,7 +82,7 @@ public class Board extends JPanel
 			String p=pieceinfo[x][y].getPiece();
 			if(p==null)
 			{
-				System.out.println("Black square clicked");
+				System.out.println("Blank square clicked");
 				chess.setStatus("You clicked on a blank square");
 				return;
 			}
@@ -107,7 +107,40 @@ public class Board extends JPanel
 		{
 			chess.setStatus("You clicked on the same square");
 			System.out.println("Clicked on the same square");
+			return;
 		}
+		else
+		{
+			tox=x;
+			toy=y;
+			movepieces();
+			chess.setStatus("Computer's move");
+			System.out.println("Computer's move");
+		}
+	}
+	
+	protected void movepieces()
+	{
+		String move=Game_Board.Board[fromx][fromy];
+		System.out.println(move);
+		int p=move.charAt(0)-48;
+		int q=move.charAt(1)-48;
+		System.out.println(p+":"+q);
+		square[tox][toy].setIcon(new ImageIcon(imageurl[p][q]));
+		square[fromx][fromy].setIcon(null);
+		
+		String s=Game_Board.Board[fromx][fromy];
+		Game_Board.Board[fromx][fromy]=Game_Board.Board[tox][toy];
+		Game_Board.Board[tox][toy]=s;
+		
+		s=Game_Board.Piece[fromx][fromy];
+		Game_Board.Piece[fromx][fromy]=Game_Board.Piece[tox][toy];
+		Game_Board.Piece[tox][toy]=s;
+		
+		s=pieceinfo[fromx][fromy].getPiece();
+		pieceinfo[fromx][fromy].setPiece(null);
+		pieceinfo[tox][toy].setPiece(s);
+		player=true;
 	}
 	
 	//createLabel function is used to make top and bottom 'a' to 'z' labels on the board
