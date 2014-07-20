@@ -1,5 +1,9 @@
 package chess.game;
 
+import java.util.LinkedList;
+//import java.util.Iterator;
+import java.util.TreeSet;
+
 public class Game_Board 
 {
 	static final int WHITE=1;						//Each white piece,square,side's color
@@ -11,6 +15,8 @@ public class Game_Board
 	static final int ROOK=3;
 	static final int QUEEN=4;
 	static final int KING=5;
+	static int side=WHITE;
+	static int xside=BLACK;
 	
 	//This is the constant variable that store the position of each black and white square on the board
 	static final int BOARD_COLOR_POSITION[]={
@@ -60,14 +66,14 @@ public class Game_Board
 	//x<<3+y = 8*x+y
 	public int getColor(int x,int y)
 	{
-		return color[x<<3+y];
+		return color[(x<<3)+y];
 	}
 	
 	//function to get the piece of a piece at x,y position.
 	//x<<3+y = 8*x+y
 	public int getPiece(int x,int y)
 	{
-		return piece[x<<3+y];
+		return piece[(x<<3)+y];
 	}
 	
 	//returns the row.(i/8)
@@ -83,8 +89,50 @@ public class Game_Board
 	}
 	
 	//getMoves method returns the set of possible moves.
-	public void getMoves()
+	LinkedList getMoves()
 	{
+		LinkedList set=new LinkedList();
 		
+		for(int i=0;i<64;i++)
+		{
+			if(color[i]==side)
+			{
+				if(piece[i]==PAWN)
+				{
+					if(side==WHITE)
+					{
+						if(i>15 && color[i-7]==BLACK)
+						{
+							//System.out.println(i+":"+(i-7));
+							pushMove(set,i,i-7,piece[i-7]);
+						}
+						if(i>15 && color[i-9]==BLACK)
+						{
+							//System.out.println(i+":"+(i-9));
+							pushMove(set,i,i-9,piece[i-9]);
+						}
+						if(i>=48 && color[i-8]==EMPTY)
+						{
+							//System.out.println(i+":"+(i-8));
+							pushMove(set,i,i-8,0);
+							if(color[i-16]==EMPTY)
+							{
+								//System.out.println(i+":"+(i-16));
+								pushMove(set,i,i-16,0);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		
+		return set;
+	}
+	
+	void pushMove(LinkedList set,int from,int to,int capture)
+	{
+		set.add(new Move(from,to,capture));
+		System.out.println(set.size());
 	}
 }
