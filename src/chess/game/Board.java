@@ -16,8 +16,7 @@ import javax.swing.JPanel;
 public class Board extends JPanel
 {
 	private static final long serialVersionUID = 3684752432733243385L;
-	Square square[][]=new Square[8][8];													//An 8*8 array to store each square's values
-	Piece pieceinfo[][]=new Piece[8][8];												//An 8*8 array to store the piece value on each square
+	Square square[][]=new Square[8][8];													//An 8*8 array to store each square's values												//An 8*8 array to store the piece value on each square
 	static String url=System.getProperty("user.dir")+"/src/chess/images/";				//Default folder to keep piece icons
 	static String images[][]={															//Array to store each piece file's value accordingly
 			{"bp.gif","bn.gif","bb.gif","br.gif","bq.gif","bk.gif"},
@@ -27,10 +26,13 @@ public class Board extends JPanel
 	static boolean player=true,computer=false;
 	Chess chess;
 	int fromx,fromy,tox,toy;
+	Game_Board board;
 	
-	Board(Chess chess)
+	Board(Chess c,Game_Board b)
 	{		
-		this.chess=chess;
+		chess=c;
+		board=b;
+		
 		System.out.println(chess);
 		JPanel boardpanel=new JPanel();
 		boardpanel.setLayout(new GridLayout(10,10));
@@ -45,17 +47,12 @@ public class Board extends JPanel
 			{
 				square[i][j]=new Square(i,j,this);
 				
-				int color=Board_Default.COLOR_POSITION[i][j];
+				int color=board.getColor(i, j);
 				
-				if(color!=Board_Default.EMPTY)
+				if(color!=Game_Board.EMPTY)
 				{
-					int piece=Board_Default.PIECE_DEFAULT[i][j];
+					int piece=board.getPiece(i, j);
 					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
-					pieceinfo[i][j]=new Piece(images[color][piece].substring(0, 2),i,j);
-				}
-				else
-				{
-					pieceinfo[i][j]=new Piece(null,i,j);
 				}
 				boardpanel.add(square[i][j]);
 			}
@@ -70,72 +67,59 @@ public class Board extends JPanel
 	//Execute this function every time a square is clicked.
 	public void selected(int x,int y)
 	{
-		System.out.println("Square selected");
+		//check is it is computer's turn
 		if(computer)
 		{
-			System.out.println("Computer's move");
-			chess.setStatus("Computer is moving.Please wait.");
+			chess.setStatus("It's computer's move.Wait!");
+			System.out.println("It's computer's move.Wait!");
 			return;
 		}
+		
+		//if it is player's turn
 		if(player)
 		{
-			String p=pieceinfo[x][y].getPiece();
-			if(p==null)
+			int piece=board.getPiece(x, y);
+			int color=board.getColor(x, y);
+
+			//Check if an empty square is clicked
+			if(piece==Game_Board.EMPTY)
 			{
-				System.out.println("Blank square clicked");
-				chess.setStatus("You clicked on a blank square");
+				chess.setStatus("You clicked on an empty square.");
+				System.out.println("You clicked on an empty square.");
 				return;
 			}
-			else if(p.charAt(0)=='b')
+			//Check if a black piece is selected
+			else if(color==Game_Board.BLACK)
 			{
-				System.out.println("Opponent's square clicked");
-				chess.setStatus("You clicked on the opponent's piece");
+				chess.setStatus("You clicked on an black piece.");
+				System.out.println("Black piece selected");
+				return;
 			}
+			//Player has selected the white piece
 			else
 			{
+				chess.setStatus("Choose the destination");
+				System.out.println("Choose the destination");
 				fromx=x;
 				fromy=y;
 				player=false;
-				chess.setStatus("Choose the destination");
-				System.out.println("Choose the destination");
 				return;
 			}
 		}
-		//System.out.println(pieceinfo[x][y].getPiece().substring(0, 2));
 		
-		if(fromx==x && fromy==y)
-		{
-			chess.setStatus("You clicked on the same square");
-			System.out.println("Clicked on the same square");
-			return;
-		}
-		else
-		{
-			tox=x;
-			toy=y;
-			movepieces();
-			chess.setStatus("Computer's move");
-			System.out.println("Computer's move");
-		}
+		tox=x;
+		toy=y;
+		movepieces();
 	}
 	
 	protected void movepieces()
 	{
-		String move=Game_Board.Board[fromx][fromy];
-		System.out.println(move);
-		int p=move.charAt(0)-48;
-		int q=move.charAt(1)-48;
-		System.out.println(p+":"+q);
-		square[tox][toy].setIcon(new ImageIcon(imageurl[p][q]));
+		int color=board.getColor(fromx, fromy);
+		int piece=board.getPiece(fromx, fromy);
+		
+		square[tox][toy].setIcon(new ImageIcon(imageurl[color][piece]));
 		square[fromx][fromy].setIcon(null);
 		
-		String s=Game_Board.Board[fromx][fromy];
-		Game_Board.Board[fromx][fromy]=Game_Board.Board[tox][toy];
-		Game_Board.Board[tox][toy]=s;
-		
-		s=pieceinfo[fromx][fromy].getPiece();
-		pieceinfo[fromx][fromy].setPiece(null);
-		pieceinfo[tox][toy].setPiece(s);
 		player=true;
 	}
 	
@@ -187,6 +171,12 @@ public class Board extends JPanel
 		}
 	}
 	
+	protected void reset(Game_Board b)
+	{
+		board=b;
+		resetboard();
+	}
+	
 	protected void resetboard()
 	{
 		System.out.println("Reset");
@@ -194,20 +184,16 @@ public class Board extends JPanel
 		{
 			for(int j=0;j<8;j++)
 			{
-				int color=Board_Default.COLOR_POSITION[i][j];
-				int piece=Board_Default.PIECE_DEFAULT[i][j];
-				if(piece!=Board_Default.EMPTY)
+				int color=board.getColor(i, j);
+				int piece=board.getPiece(i, j);
+				if(piece!=Game_Board.EMPTY)
 				{
 					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
-					pieceinfo[i][j].setPiece(images[color][piece].substring(0, 2));
 				}
 				else
 				{
 					square[i][j].setIcon(null);
-					pieceinfo[i][j].setPiece(null);
 				}
-				Game_Board.Board[i][j]=color+""+piece;
-				System.out.print(Game_Board.Board[i][j]+" ");
 			}
 			System.out.println();
 		}
