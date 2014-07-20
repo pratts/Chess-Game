@@ -25,6 +25,7 @@ public class Chess
 	private JPanel top,mid,bottom;		//various panels to contain different window components
 	Board board;
 	static Chess chess;
+	Game_Board game;
 	
 	//Chess constructor to initialize all the window components and add them to the window.
 	Chess()
@@ -61,7 +62,8 @@ public class Chess
 		//Middle panel that contains the chess board
 		Board.loadImages();
 		mid=new JPanel();
-		board=new Board(this);
+		game=new Game_Board();
+		board=new Board(this,game);
 		mid.add(board);
 	}
 	
@@ -80,7 +82,8 @@ public class Chess
 	
 	protected void reset()
 	{
-		board.resetboard();
+		game=new Game_Board();
+		board.reset(game);
 	}
 	
 	protected void setStatus(String label)
