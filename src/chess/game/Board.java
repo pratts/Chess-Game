@@ -8,6 +8,9 @@ package chess.game;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -65,6 +68,7 @@ public class Board extends JPanel
 	}
 	
 	//Execute this function every time a square is clicked.
+	@SuppressWarnings("unchecked")
 	public void selected(int x,int y)
 	{
 		//check is it is computer's turn
@@ -109,6 +113,18 @@ public class Board extends JPanel
 		
 		tox=x;
 		toy=y;
+		
+		LinkedList set=board.getMoves();
+		System.out.println(set.size());
+		Iterator<Move> i=set.iterator();
+		Move m=null;
+		while(i.hasNext())
+		{
+			m=(Move)i.next();
+			System.out.println(m);
+			//i.next();
+		}
+		
 		movepieces();
 	}
 	
