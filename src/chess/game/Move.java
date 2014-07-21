@@ -1,6 +1,6 @@
 package chess.game;
 
-public class Move implements Comparable
+public class Move implements Comparable<Object>
 {
 	int from,to,capture;
 	
