@@ -10,7 +10,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -28,7 +27,7 @@ public class Board extends JPanel
 	static Image imageurl[][]=new Image[2][6];											//imageurl will store the location of each image
 	static boolean player=true,computer=false;
 	Chess chess;
-	int fromx,fromy,tox,toy;
+	int from,to;
 	Game_Board board;
 	
 	Board(Chess c,Game_Board b)
@@ -36,7 +35,7 @@ public class Board extends JPanel
 		chess=c;
 		board=b;
 		
-		System.out.println(chess);
+		//System.out.println(chess);
 		JPanel boardpanel=new JPanel();
 		boardpanel.setLayout(new GridLayout(10,10));
 		
@@ -68,14 +67,13 @@ public class Board extends JPanel
 	}
 	
 	//Execute this function every time a square is clicked.
-	@SuppressWarnings("unchecked")
 	public void selected(int x,int y)
 	{
 		//check is it is computer's turn
 		if(computer)
 		{
 			chess.setStatus("It's computer's move.Wait!");
-			System.out.println("It's computer's move.Wait!");
+			//System.out.println("It's computer's move.Wait!");
 			return;
 		}
 		
@@ -89,40 +87,51 @@ public class Board extends JPanel
 			if(piece==Game_Board.EMPTY)
 			{
 				chess.setStatus("You clicked on an empty square.");
-				System.out.println("You clicked on an empty square.");
+				//System.out.println("You clicked on an empty square.");
 				return;
 			}
 			//Check if a black piece is selected
 			else if(color==Game_Board.BLACK)
 			{
 				chess.setStatus("You clicked on an black piece.");
-				System.out.println("Black piece selected");
+				//System.out.println("Black piece selected");
 				return;
 			}
 			//Player has selected the white piece
 			else
 			{
 				chess.setStatus("Choose the destination");
-				System.out.println("Choose the destination");
-				fromx=x;
-				fromy=y;
+				//System.out.println("Choose the destination");
+				from=(x<<3)+y;
 				player=false;
 				return;
 			}
 		}
 		
-		tox=x;
-		toy=y;
+		to=(x<<3)+y;
 		
-		LinkedList set=board.getMoves();
-		System.out.println(set.size());
+		LinkedList<Move> set=board.getMoves();
+		boolean found=false;
+		//System.out.println(set.size());
 		Iterator<Move> i=set.iterator();
 		Move m=null;
 		while(i.hasNext())
 		{
 			m=(Move)i.next();
-			System.out.println(m);
+			//System.out.println(m);
+			if(from==m.from && to==m.to)
+			{
+				found=true;
+				break;
+			}
 			//i.next();
+		}
+		
+		if(!found)
+		{
+			chess.setStatus("Illegal move");
+			//System.out.println("Illegal move");
+			player=true;
 		}
 		
 		movepieces();
@@ -130,13 +139,7 @@ public class Board extends JPanel
 	
 	protected void movepieces()
 	{
-		int color=board.getColor(fromx, fromy);
-		int piece=board.getPiece(fromx, fromy);
 		
-		square[tox][toy].setIcon(new ImageIcon(imageurl[color][piece]));
-		square[fromx][fromy].setIcon(null);
-		
-		player=true;
 	}
 	
 	//createLabel function is used to make top and bottom 'a' to 'z' labels on the board
@@ -211,7 +214,6 @@ public class Board extends JPanel
 					square[i][j].setIcon(null);
 				}
 			}
-			System.out.println();
 		}
 	}
 }
