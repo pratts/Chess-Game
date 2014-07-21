@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Board extends JPanel
@@ -51,7 +52,7 @@ public class Board extends JPanel
 				
 				int color=board.getColor(i, j);
 				
-				if(color!=Game_Board.EMPTY)
+				if(color!=board.EMPTY)
 				{
 					int piece=board.getPiece(i, j);
 					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
@@ -84,14 +85,14 @@ public class Board extends JPanel
 			int color=board.getColor(x, y);
 
 			//Check if an empty square is clicked
-			if(piece==Game_Board.EMPTY)
+			if(piece==board.EMPTY)
 			{
 				chess.setStatus("You clicked on an empty square.");
 				//System.out.println("You clicked on an empty square.");
 				return;
 			}
 			//Check if a black piece is selected
-			else if(color==Game_Board.BLACK)
+			else if(color==board.BLACK)
 			{
 				chess.setStatus("You clicked on an black piece.");
 				//System.out.println("Black piece selected");
@@ -127,19 +128,75 @@ public class Board extends JPanel
 			//i.next();
 		}
 		
-		if(!found)
+		if(!found || !board.makeMove(m))
 		{
 			chess.setStatus("Illegal move");
 			//System.out.println("Illegal move");
 			player=true;
+			return;
 		}
 		
-		movepieces();
+		movepieces(m);
+		isResult();
+		
 	}
 	
-	protected void movepieces()
+	protected void movepieces(Move m)
 	{
+		int fromrow=board.getRow(m.from);
+		int fromcol=board.getColumn(m.from);
+		int torow=board.getRow(m.to);
+		int tocol=board.getColumn(m.to);
 		
+		square[torow][tocol].setIcon(new ImageIcon(imageurl[board.color[m.to]][board.piece[m.to]]));
+		square[fromrow][fromcol].setIcon(null);
+	}
+	
+	public boolean isResult()
+	{
+		LinkedList<Move> list=board.getMoves();
+		boolean found=false;
+		String message=null;
+		Iterator<Move> i=list.iterator();
+		Move m=null;
+		
+		while(i.hasNext())
+		{
+			m=(Move)i.next();
+			if(board.makeMove(m))
+			{
+				board.undoMove(m);
+				found=true;
+				break;
+			}
+		}
+		
+		if (!found) 
+		{
+            if (board.inCheck(board.side)) 
+            {
+                if (board.side == board.WHITE)
+                    message = "0 - 1 Black mates";
+                else
+                    message = "1 - 0 White mates";
+            }
+            else
+                message = "0 - 0 Stalemate";
+        }
+	
+        if (message != null) 
+        {
+            int choice = JOptionPane.showConfirmDialog(this, message + "\nPlay again?", "Play Again?", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) 
+            {
+                chess.reset();
+            }
+            return true;
+        }
+	//Check condition
+        if (board.inCheck(board.side))
+            chess.setStatus("Check!");
+        return false;
 	}
 	
 	//createLabel function is used to make top and bottom 'a' to 'z' labels on the board
@@ -205,7 +262,7 @@ public class Board extends JPanel
 			{
 				int color=board.getColor(i, j);
 				int piece=board.getPiece(i, j);
-				if(piece!=Game_Board.EMPTY)
+				if(piece!=board.EMPTY)
 				{
 					square[i][j].setIcon(new ImageIcon(imageurl[color][piece]));
 				}
