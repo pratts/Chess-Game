@@ -1,9 +1,6 @@
 package chess.game;
 
 import java.util.LinkedList;
-//import java.util.Iterator;
-import java.util.TreeSet;
-
 public class Game_Board 
 {
 	static final int WHITE=1;						//Each white piece,square,side's color
@@ -89,9 +86,9 @@ public class Game_Board
 	}
 	
 	//getMoves method returns the set of possible moves.
-	LinkedList getMoves()
+	LinkedList<Move> getMoves()
 	{
-		LinkedList set=new LinkedList();
+		LinkedList<Move> set=new LinkedList<Move>();
 		
 		for(int i=0;i<64;i++)
 		{
@@ -101,12 +98,12 @@ public class Game_Board
 				{
 					if(side==WHITE)
 					{
-						if(i>15 && color[i-7]==BLACK)
+						if(getColumn(i)!=7 && color[i-7]==BLACK)
 						{
 							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i-7,piece[i-7]);
 						}
-						if(i>15 && color[i-9]==BLACK)
+						if(getColumn(i)!=0 && color[i-9]==BLACK)
 						{
 							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i-9,piece[i-9]);
@@ -122,6 +119,29 @@ public class Game_Board
 							}
 						}
 					}
+					else
+					{
+						if(getColumn(i)!=7 && color[i+9]==BLACK)
+						{
+							//System.out.println(i+":"+(i-7));
+							pushMove(set,i,i+9,piece[i+9]);
+						}
+						if(getColumn(i)!=0 && color[i+7]==BLACK)
+						{
+							//System.out.println(i+":"+(i-9));
+							pushMove(set,i,i+7,piece[i+7]);
+						}
+						if(i>=48 && color[i+8]==EMPTY)
+						{
+							//System.out.println(i+":"+(i-8));
+							pushMove(set,i,i+8,0);
+							if(color[i+16]==EMPTY)
+							{
+								//System.out.println(i+":"+(i-16));
+								pushMove(set,i,i+16,0);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -130,9 +150,9 @@ public class Game_Board
 		return set;
 	}
 	
-	void pushMove(LinkedList set,int from,int to,int capture)
+	void pushMove(LinkedList<Move> set,int from,int to,int capture)
 	{
 		set.add(new Move(from,to,capture));
-		System.out.println(set.size());
+		//System.out.println(set.size());
 	}
 }
