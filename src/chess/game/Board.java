@@ -31,11 +31,13 @@ public class Board extends JPanel
 	Chess chess;
 	int from,to;
 	Game_Board board;
+	Search search;
 	
 	Board(Chess c,Game_Board b)
 	{		
 		chess=c;
 		board=b;
+		search=new Search(board);
 		
 		//System.out.println(chess);
 		JPanel boardpanel=new JPanel();
@@ -254,6 +256,7 @@ public class Board extends JPanel
 	protected void reset(Game_Board b)
 	{
 		board=b;
+		search=new Search(board);
 		resetboard();
 	}
 	
