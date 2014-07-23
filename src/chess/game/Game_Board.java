@@ -60,6 +60,8 @@ public class Game_Board
 		3,1,2,4,5,2,1,3,
 	};
 	
+	int pieceValue[] = { 100, 300, 300, 500, 900, 0 };
+	
 	private boolean slide[] = { false, false, true, true, true, false };
 
     private int offsets[] = { 0, 8, 4, 4, 8, 8 };
@@ -336,5 +338,8 @@ public class Game_Board
 		
 		color[from]=EMPTY;
 		piece[from]=EMPTY;
+		
+		side^=1;
+		xside^=1;
 	}
 }
