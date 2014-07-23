@@ -9,7 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Iterator;
-import java.util.LinkedList;
+//import java.util.LinkedList;
+import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -111,7 +112,8 @@ public class Board extends JPanel
 		
 		to=(x<<3)+y;
 		
-		LinkedList<Move> set=board.getMoves();
+		TreeSet<Move> set=board.getMoves();
+		System.out.println(set.size());
 		boolean found=false;
 		//System.out.println(set.size());
 		Iterator<Move> i=set.iterator();
@@ -119,7 +121,7 @@ public class Board extends JPanel
 		while(i.hasNext())
 		{
 			m=(Move)i.next();
-			//System.out.println(m);
+			System.out.println(m);
 			if(from==m.from && to==m.to)
 			{
 				found=true;
@@ -136,9 +138,11 @@ public class Board extends JPanel
 			return;
 		}
 		
-		movepieces(m);
-		isResult();
-		
+		else
+		{
+			movepieces(m);
+			isResult();
+		}
 	}
 	
 	protected void movepieces(Move m)
@@ -154,7 +158,7 @@ public class Board extends JPanel
 	
 	public boolean isResult()
 	{
-		LinkedList<Move> list=board.getMoves();
+		TreeSet<Move> list=board.getMoves();
 		boolean found=false;
 		String message=null;
 		Iterator<Move> i=list.iterator();
