@@ -1,6 +1,7 @@
 package chess.game;
 
-import java.util.LinkedList;
+//import java.util.LinkedList;
+import java.util.TreeSet;
 public class Game_Board 
 {
 	final int WHITE=1;						//Each white piece,square,side's color
@@ -125,9 +126,9 @@ public class Game_Board
 	}
 	
 	//getMoves method returns the set of possible moves.
-	LinkedList<Move> getMoves()
+	TreeSet<Move> getMoves()
 	{
-		LinkedList<Move> set=new LinkedList<Move>();
+		TreeSet<Move> set=new TreeSet<Move>();
 		
 		for(int i=0;i<64;i++)
 		{
@@ -161,12 +162,12 @@ public class Game_Board
 					}
 					else
 					{
-						if(getColumn(i)!=7 && color[i+9]==BLACK)
+						if(getColumn(i)!=7 && color[i+9]==WHITE)
 						{
 							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i+9,piece[i+9]);
 						}
-						if(getColumn(i)!=0 && color[i+7]==BLACK)
+						if(getColumn(i)!=0 && color[i+7]==WHITE)
 						{
 							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i+7,piece[i+7]);
@@ -287,9 +288,19 @@ public class Game_Board
 		return false;
 	}
 	
-	void pushMove(LinkedList<Move> set,int from,int to,int capture)
+	void pushMove(TreeSet<Move> set,int from,int to,int capture)
 	{
-		set.add(new Move(from,to,capture));
+		Move m=new Move(from,to,capture);
+		if(color[to]!=EMPTY)
+		{
+			m.setScore(1000000 + (piece[to] * 10) - piece[from]);
+		}
+		else
+		{
+			m.setScore(piece[to]);
+		}
+		//System.out.println(m);
+		set.add(m);
 		//System.out.println(set.size());
 	}
 	
