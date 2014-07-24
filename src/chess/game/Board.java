@@ -13,6 +13,7 @@ import java.util.LinkedList;
 //import java.util.LinkedList;
 //import java.util.TreeSet;
 
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -116,7 +117,7 @@ public class Board extends JPanel
 		to=(x<<3)+y;
 		
 		LinkedList<Move> set=board.getMoves();
-		System.out.println(set.size());
+		//System.out.println(set.size());
 		boolean found=false;
 		//System.out.println(set.size());
 		Iterator<Move> i=set.iterator();
@@ -125,7 +126,7 @@ public class Board extends JPanel
 		{
 			m=(Move)i.next();
 			//System.out.println(m);
-			if(from==m.from && to==m.to)
+			if(from==m.from && to==m.to)// && m.capture==board.piece[to])
 			{
 				found=true;
 				break;
@@ -148,7 +149,7 @@ public class Board extends JPanel
 			{
 				return;
 			}
-			player=false;
+			player=true;
 			computer=true;
 			computermove();
 		}
@@ -156,21 +157,33 @@ public class Board extends JPanel
 	
 	protected void computermove()
 	{
+		//String s=search.alphaBeta(4, 1000000, -1000000, "",0);
+		/*int xf=Integer.valueOf(s.charAt(0));
+		int yf=Integer.valueOf(s.charAt(1));
+		int xt=Integer.valueOf(s.charAt(2));
+		int yt=Integer.valueOf(s.charAt(3));
+		int cap=Integer.valueOf(s.charAt(4));
+		*/
 		search.findmove(4);
-		Move move=search.getMove();
+		Move move=search.getMove();//new Move((xf<<3)+yf,(xt<<3)+yt,cap);
+		System.out.println(move);
+		board.makeMove(move);
 		movepieces(move);
 		isResult();
 		player=true;
 		computer=false;
+		//System.out.println(board.evaluate());
 	}
 	
 	protected void movepieces(Move m)
 	{
-		int fromrow=board.getRow(m.from);
-		int fromcol=board.getColumn(m.from);
-		int torow=board.getRow(m.to);
-		int tocol=board.getColumn(m.to);
+		int fromrow=(m.from/8);
+		int fromcol=(m.from%8);
+		int torow=(m.to/8);
+		int tocol=(m.to%8);
 		
+		System.out.println(m.to+":"+m.from);
+		System.out.println(board.color[m.to]+":"+board.piece[m.to]);
 		square[torow][tocol].setIcon(new ImageIcon(imageurl[board.color[m.to]][board.piece[m.to]]));
 		square[fromrow][fromcol].setIcon(null);
 	}
@@ -187,7 +200,7 @@ public class Board extends JPanel
 		{
 			m=(Move)i.next();
 			boolean make=board.makeMove(m);
-			System.out.println(make);
+			//System.out.println(make);
 			if(make)
 			{
 				board.undoMove(m);
