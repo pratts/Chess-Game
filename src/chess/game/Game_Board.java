@@ -1,7 +1,8 @@
 package chess.game;
 
+import java.util.LinkedList;
 //import java.util.LinkedList;
-import java.util.TreeSet;
+//import java.util.TreeSet;
 public class Game_Board 
 {
 	final int WHITE=1;						//Each white piece,square,side's color
@@ -188,6 +189,17 @@ public class Game_Board
     	-50,-30,-30,-30,-30,-30,-30,-50
    		};
 	
+	int flip[] = {
+		56,  57,  58,  59,  60,  61,  62,  63,
+		48,  49,  50,  51,  52,  53,  54,  55,
+		40,  41,  42,  43,  44,  45,  46,  47,
+		32,  33,  34,  35,  36,  37,  38,  39,
+		24,  25,  26,  27,  28,  29,  30,  31,
+		16,  17,  18,  19,  20,  21,  22,  23,
+		 8,   9,  10,  11,  12,  13,  14,  15,
+		 0,   1,   2,   3,   4,   5,   6,   7
+		};
+	
 	//function to get the color of a piece at x,y position.
 	//x<<3+y = 8*x+y
 	public int getColor(int x,int y)
@@ -215,9 +227,9 @@ public class Game_Board
 	}
 	
 	//getMoves method returns the set of possible moves.
-	TreeSet<Move> getMoves()
+	LinkedList<Move> getMoves()
 	{
-		TreeSet<Move> set=new TreeSet<Move>();
+		LinkedList<Move> set=new LinkedList<Move>();
 		
 		for(int i=0;i<64;i++)
 		{
@@ -377,7 +389,7 @@ public class Game_Board
 		return false;
 	}
 	
-	void pushMove(TreeSet<Move> set,int from,int to,int capture)
+	void pushMove(LinkedList<Move> set,int from,int to,int capture)
 	{
 		Move m=new Move(from,to,capture);
 		if(color[to]!=EMPTY)
@@ -394,7 +406,7 @@ public class Game_Board
 	}
 	
 	public boolean makeMove(Move m)
-	{
+	{		
 		int from=m.from;
 		int to=m.to;
 		
@@ -420,18 +432,142 @@ public class Game_Board
 		int from=m.from;
 		int to=m.to;
 		
-		color[to]=color[from];
-		piece[to]=piece[from];
+		color[from]=color[to];
+		piece[from]=piece[to];
 		
-		color[from]=EMPTY;
-		piece[from]=EMPTY;
-		
+		if(m.capture==EMPTY)
+		{
+			color[to]=EMPTY;
+			piece[to]=EMPTY;
+		}
+		else
+		{
+			color[to]=xside;
+			piece[to]=m.capture;
+		}
 		side^=1;
 		xside^=1;
 	}
 	
 	int evaluate()
 	{
-		return 0;
+		int score[]=new int[2],wbishopcount=0,bbishopcount=0,matw=0,matb=0;
+		for(int i=0;i<64;i++)
+		{
+			if(color[i]==WHITE)
+			{
+				switch(piece[i])
+				{
+					case PAWN:score[1]+=pieceValue[PAWN];
+							  break;
+					case KNIGHT:score[1]+=pieceValue[KNIGHT];
+							  break;
+					case BISHOP:wbishopcount+=1;
+							  break;
+					case ROOK:score[1]+=pieceValue[ROOK];
+							  break;
+					case QUEEN:score[1]+=pieceValue[QUEEN];
+							  break;
+				}
+			}
+			else
+			{
+				switch(piece[i])
+				{
+					case PAWN:score[0]+=pieceValue[PAWN];
+							  break;
+					case KNIGHT:score[0]+=pieceValue[KNIGHT];
+							  break;
+					case BISHOP:bbishopcount+=1;
+							  break;
+					case ROOK:score[0]+=pieceValue[ROOK];
+							  break;
+					case QUEEN:score[0]+=pieceValue[QUEEN];
+							  break;
+				}
+			}
+		}
+		if(wbishopcount>=2)
+		{
+			score[1]+=(pieceValue[BISHOP]*wbishopcount);
+		}
+		else
+		{
+			score[1]+=(pieceValue[BISHOP]*wbishopcount);
+		}
+		if(wbishopcount>=2)
+		{
+			score[0]+=(pieceValue[BISHOP]*bbishopcount);
+		}
+		else
+		{
+			score[0]+=(pieceValue[BISHOP]*bbishopcount);
+		}
+		
+		matw=score[1];
+		matb=score[0];
+		
+		
+		for(int i=0;i<64;i++)
+		{
+			if(color[i]==WHITE)
+			{
+				switch(piece[i])
+				{
+					case PAWN:score[1]+=pawn[i];
+							  break;
+					case KNIGHT:score[1]+=knight[i];
+							  break;
+					case BISHOP:score[1]+=bishop[i];
+							  break;
+					case ROOK:score[1]+=rook[i];
+							  break;
+					case QUEEN:score[1]+=queen[i];
+							  break;
+					case KING:if(matw>=2000)
+							  {
+									score[1]+=kingmidgame[i];
+							  }
+							  else
+							  {
+								  	score[1]+=kingendgame[i];
+							  }
+				}
+			}
+			else
+			{
+				switch(piece[i])
+				{
+					case PAWN:score[0]+=pawn[flip[i]];
+							  break;
+					case KNIGHT:score[0]+=knight[flip[i]];
+							  break;
+					case BISHOP:score[0]+=bishop[flip[i]];
+							  break;
+					case ROOK:score[0]+=rook[flip[i]];
+							  break;
+					case QUEEN:score[0]+=queen[flip[i]];
+							  break;
+					case KING:if(matb>=2000)
+							  {
+									score[0]+=kingmidgame[flip[i]];
+							  }
+							  else
+							  {
+								  	score[0]+=kingendgame[flip[i]];
+							  }
+				}
+			}
+		}
+		
+		
+		if(side==WHITE)
+		{
+			return (score[1]-score[0]);
+		}
+		else
+		{
+			return (score[0]-score[1]);
+		}
 	}
 }
