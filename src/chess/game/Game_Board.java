@@ -67,7 +67,7 @@ public class Game_Board
 	
 	private boolean slide[] = { false, false, true, true, true, false };
 
-    private int offsets[] = { 0, 8, 4, 4, 8, 8 };
+    private int offsets[] = { 0, 8, 4, 4, 8, 8,0 };
     
     private int offset[][] = {
         { 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -235,6 +235,7 @@ public class Game_Board
 		
 		for(int i=0;i<64;i++)
 		{
+			System.out.println(i+":"+color[i]+":"+piece[i]);
 			if(color[i]==side)
 			{
 				int p=piece[i];
@@ -508,8 +509,8 @@ public class Game_Board
 	
 	public boolean makeMove(Move m)
 	{		
-		data[hply]=new History();
-		data[hply].move=m;
+		//data[hply]=new History();
+		//data[hply].move=m;
 		
 		++hply;
 		
@@ -539,11 +540,11 @@ public class Game_Board
 		xside ^= 1;
 		
 		--hply;
-		Move temp=data[hply].move;
+		//Move temp=data[hply].move;
 		
-		int from=temp.from;
-		int to=temp.to;
-		int capture=temp.capture;
+		int from=m.from;
+		int to=m.to;
+		int capture=m.capture;
 		
 		color[from]=side;
 		piece[from]=piece[to];
