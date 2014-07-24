@@ -9,8 +9,9 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Iterator;
+import java.util.LinkedList;
 //import java.util.LinkedList;
-import java.util.TreeSet;
+//import java.util.TreeSet;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -114,7 +115,7 @@ public class Board extends JPanel
 		
 		to=(x<<3)+y;
 		
-		TreeSet<Move> set=board.getMoves();
+		LinkedList<Move> set=board.getMoves();
 		System.out.println(set.size());
 		boolean found=false;
 		//System.out.println(set.size());
@@ -123,7 +124,7 @@ public class Board extends JPanel
 		while(i.hasNext())
 		{
 			m=(Move)i.next();
-			System.out.println(m);
+			//System.out.println(m);
 			if(from==m.from && to==m.to)
 			{
 				found=true;
@@ -143,8 +144,24 @@ public class Board extends JPanel
 		else
 		{
 			movepieces(m);
-			isResult();
+			if(isResult())
+			{
+				return;
+			}
+			player=false;
+			computer=true;
+			computermove();
 		}
+	}
+	
+	protected void computermove()
+	{
+		search.findmove(4);
+		Move move=search.getMove();
+		movepieces(move);
+		isResult();
+		player=true;
+		computer=false;
 	}
 	
 	protected void movepieces(Move m)
@@ -160,7 +177,7 @@ public class Board extends JPanel
 	
 	public boolean isResult()
 	{
-		TreeSet<Move> list=board.getMoves();
+		LinkedList<Move> list=board.getMoves();
 		boolean found=false;
 		String message=null;
 		Iterator<Move> i=list.iterator();
@@ -169,7 +186,9 @@ public class Board extends JPanel
 		while(i.hasNext())
 		{
 			m=(Move)i.next();
-			if(board.makeMove(m))
+			boolean make=board.makeMove(m);
+			System.out.println(make);
+			if(make)
 			{
 				board.undoMove(m);
 				found=true;
