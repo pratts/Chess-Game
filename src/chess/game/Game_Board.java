@@ -16,6 +16,8 @@ public class Game_Board
 	final int KING=5;
 	int side=WHITE;
 	int xside=BLACK;
+	int hply=0;
+	History data[]=new History[400];
 	
 	//This is the constant variable that store the position of each black and white square on the board
 	 final int BOARD_COLOR_POSITION[]={
@@ -217,13 +219,13 @@ public class Game_Board
 	//returns the row.(i/8)
 	public int getRow(int i)
 	{
-		return i>>3;
+		return (i/8);
 	}
 	
 	//returns the row.(i%8)
 	public int getColumn(int i)
 	{
-		return (i&7);
+		return (i%7);
 	}
 	
 	//getMoves method returns the set of possible moves.
@@ -240,49 +242,148 @@ public class Game_Board
 				{
 					if(side==WHITE)
 					{
+						try{
 						if(getColumn(i)!=7 && color[i-7]==BLACK)
 						{
 							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i-7,piece[i-7]);
-						}
+						}}catch(Exception e){}
+						
+						try{
 						if(getColumn(i)!=0 && color[i-9]==BLACK)
 						{
 							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i-9,piece[i-9]);
-						}
+						}}catch(Exception e){}
+						
+						try{
 						if(i>=48 && color[i-8]==EMPTY)
 						{
 							//System.out.println(i+":"+(i-8));
-							pushMove(set,i,i-8,0);
+							pushMove(set,i,i-8,6);
+							try{
 							if(color[i-16]==EMPTY)
 							{
 								//System.out.println(i+":"+(i-16));
-								pushMove(set,i,i-16,0);
-							}
-						}
+								pushMove(set,i,i-16,6);
+							}}catch(Exception e){}
+						}}catch(Exception e){}
 					}
 					else
 					{
+						try{
 						if(getColumn(i)!=7 && color[i+9]==WHITE)
 						{
 							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i+9,piece[i+9]);
-						}
+						}}catch(Exception e){}
+						
+						try{
 						if(getColumn(i)!=0 && color[i+7]==WHITE)
 						{
 							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i+7,piece[i+7]);
-						}
+						}}catch(Exception e){}
+						
+						try{
+						if(i>=48 && color[i+8]==EMPTY)
+						{
+							//System.out.println(i+":"+(i-8));
+							pushMove(set,i,i+8,6);
+							
+							try{
+							if(color[i+16]==EMPTY)
+							{
+								//System.out.println(i+":"+(i-16));
+								pushMove(set,i,i+16,6);
+							}
+							}catch(Exception e){}
+						}}catch(Exception e){}
+					}
+				}
+				
+				else
+				{
+					for (int j = 0; j < offsets[piece[i]]; ++j)
+					{
+                        for (int n = i;;) 
+                        {
+                            n = mailbox[mailbox64[n] + offset[piece[i]][j]];
+                            if (n == -1)
+                                break;
+                            if (color[n] != EMPTY) 
+                            {
+                                if (color[n] == xside)
+                                    pushMove(set, i, n, piece[n]);
+                                break;
+                            }
+                            pushMove(set, i, n, 6);
+                            if (!slide[piece[i]])
+                                break;
+                        }
+					}
+				}
+			}
+		}
+		return set;
+	}
+	
+	LinkedList<Move> getCaptures()
+	{
+		LinkedList<Move> set=new LinkedList<Move>();
+		
+		for(int i=0;i<64;i++)
+		{
+			if(color[i]==side)
+			{
+				int p=piece[i];
+				if(p==PAWN)
+				{
+					if(side==WHITE)
+					{
+						try{
+						if(getColumn(i)!=7 && color[i-7]==BLACK)
+						{
+							//System.out.println(i+":"+(i-7));
+							pushMove(set,i,i-7,piece[i-7]);
+						}}catch(Exception e){}
+						
+						try{
+						if(getColumn(i)!=0 && color[i-9]==BLACK)
+						{
+							//System.out.println(i+":"+(i-9));
+							pushMove(set,i,i-9,piece[i-9]);
+						}}catch(Exception e){}
+						
+						try{
+						if(i<=15 && color[i-8]==EMPTY)
+						{
+							//System.out.println(i+":"+(i-8));
+							pushMove(set,i,i-8,0);
+						}}catch(Exception e){}
+					}
+					else
+					{
+						try{
+						if(getColumn(i)!=7 && color[i+9]==WHITE)
+						{
+							//System.out.println(i+":"+(i-7));
+							pushMove(set,i,i+9,piece[i+9]);
+						}}catch(Exception e){}
+						
+						try{
+						if(getColumn(i)!=0 && color[i+7]==WHITE)
+						{
+							//System.out.println(i+":"+(i-9));
+							pushMove(set,i,i+7,piece[i+7]);
+						}}catch(Exception e){}
+						
+						try{
 						if(i>=48 && color[i+8]==EMPTY)
 						{
 							//System.out.println(i+":"+(i-8));
 							pushMove(set,i,i+8,0);
-							if(color[i+16]==EMPTY)
-							{
-								//System.out.println(i+":"+(i-16));
-								pushMove(set,i,i+16,0);
-							}
-						}
+						}}catch(Exception e){}
 					}
 				}
 				
@@ -301,7 +402,7 @@ public class Game_Board
                                     pushMove(set, i, n, color[n]);
                                 break;
                             }
-                            pushMove(set, i, n, 0);
+                           // pushMove(set, i, n, 0);
                             if (!slide[piece[i]])
                                 break;
                         }
@@ -407,10 +508,15 @@ public class Game_Board
 	
 	public boolean makeMove(Move m)
 	{		
+		data[hply]=new History();
+		data[hply].move=m;
+		
+		++hply;
+		
 		int from=m.from;
 		int to=m.to;
 		
-		color[to]=color[from];
+		color[to]=side;
 		piece[to]=piece[from];
 		
 		color[from]=EMPTY;
@@ -429,24 +535,27 @@ public class Game_Board
 	
 	public void undoMove(Move m)
 	{
-		int from=m.from;
-		int to=m.to;
+		side ^= 1;
+		xside ^= 1;
 		
-		color[from]=color[to];
+		--hply;
+		Move temp=data[hply].move;
+		
+		int from=temp.from;
+		int to=temp.to;
+		int capture=temp.capture;
+		
+		color[from]=side;
 		piece[from]=piece[to];
-		
-		if(m.capture==EMPTY)
+		if(capture==EMPTY)
 		{
 			color[to]=EMPTY;
-			piece[to]=EMPTY;
 		}
 		else
 		{
 			color[to]=xside;
-			piece[to]=m.capture;
-		}
-		side^=1;
-		xside^=1;
+		}		
+		piece[to]=capture;
 	}
 	
 	int evaluate()
@@ -493,15 +602,15 @@ public class Game_Board
 		}
 		else
 		{
-			score[1]+=(pieceValue[BISHOP]*wbishopcount);
+			score[1]+=(pieceValue[BISHOP]*250);
 		}
-		if(wbishopcount>=2)
+		if(bbishopcount>=2)
 		{
 			score[0]+=(pieceValue[BISHOP]*bbishopcount);
 		}
 		else
 		{
-			score[0]+=(pieceValue[BISHOP]*bbishopcount);
+			score[0]+=(pieceValue[BISHOP]*250);
 		}
 		
 		matw=score[1];
@@ -559,7 +668,6 @@ public class Game_Board
 				}
 			}
 		}
-		
 		
 		if(side==WHITE)
 		{
