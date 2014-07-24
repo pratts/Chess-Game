@@ -2,8 +2,6 @@ package chess.game;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-//import java.util.TreeSet;
-//import java.util.TreeSet;
 
 public class Search 
 {
@@ -13,6 +11,8 @@ public class Search
 	int ply=0;
 	int MAX_PLY = 32;
     Move m=null;
+    private int pvLength[] = new int[MAX_PLY];
+    private boolean followPV;
 	
 	Search(Game_Board gb)
 	{
@@ -22,13 +22,17 @@ public class Search
 	public Move getMove()
 	{
 		//System.out.println(m);
-		return m;
+		return pv[0][0];
 	}
 	public void findmove(int max)
 	{
 		//System.out.println("ply      nodes  score  pv");
+		for (int i = 0; i < MAX_PLY; i++)
+            for (int j = 0; j < MAX_PLY; j++)
+                pv[i][j] = new Move(0,0,0);
 		for(int i=0;i<max;i++)
 		{
+			followPV=true;
 			int x=search(-100000,100000,i);
 			if(x>=10000 || x<=-10000)
 			{
@@ -51,7 +55,15 @@ public class Search
 		if (ply >= MAX_PLY - 1)
             return board.evaluate();
 		
+		boolean check = board.inCheck(board.side);
+		if (check)
+			++depth;
+		
+		pvLength[ply] = ply;
+		
 		LinkedList<Move> move=board.getMoves();
+		if (followPV)  /* are we following the PV? */
+            sortPV(move);
 		Iterator<Move> i=move.iterator();
 		
 		while(i.hasNext())
@@ -72,6 +84,10 @@ public class Search
 			{
 				alpha=score;
 				m=temp;
+				pv[ply][ply] = m;
+                for (int j = ply + 1; j < pvLength[ply + 1]; ++j)
+                        pv[ply][j] = pv[ply + 1][j];
+                pvLength[ply] = pvLength[ply + 1];
 				//System.out.println(m);
 			}
 			
@@ -86,6 +102,8 @@ public class Search
 
 	int quiesce(int alpha, int beta)
 	{
+		pvLength[ply] = ply;
+		
 		if (ply >= MAX_PLY - 1)
             return board.evaluate();
 		
@@ -102,6 +120,8 @@ public class Search
 		}
 		
 		LinkedList<Move> move=board.getCaptures();
+		if (followPV)  /* are we following the PV? */
+            sortPV(move);
 		Iterator<Move> i=move.iterator();
 	
 		while(i.hasNext())
@@ -120,6 +140,10 @@ public class Search
 			{
 				alpha=score;
 				m=temp;
+				pv[ply][ply] = m;
+                for (int j = ply + 1; j < pvLength[ply + 1]; ++j)
+                        pv[ply][j] = pv[ply + 1][j];
+                pvLength[ply] = pvLength[ply + 1];
 				//System.out.println(m);
 			}
 			if(alpha>beta)
@@ -127,7 +151,24 @@ public class Search
 				break;
 			}
 		}
-		
 		return alpha;
 	}
+	
+	void sortPV(LinkedList<Move> moves) 
+	{
+		followPV = false;
+	    Iterator<Move> i = moves.iterator();
+		while (i.hasNext()) 
+		{
+			Move m = (Move) i.next();
+	        if (m.equals(pv[0][ply])) 
+	        {
+	            followPV = true;
+	            m.score += 10000000;
+	            i.remove();
+	            moves.add(m);
+	            return;
+	         }
+	    }
+	    }
 }
