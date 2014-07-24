@@ -151,6 +151,15 @@ public class Board extends JPanel
 			}
 			player=true;
 			computer=true;
+			
+			for(int k=0;k<8;k++)
+			{
+				for(int j=0;j<8;j++)
+				{
+					System.out.print(board.color[(k*8)+(j%8)]+":"+board.piece[(k*8)+(j%8)]+" ");
+				}System.out.println();
+			}
+			
 			computermove();
 		}
 	}
@@ -164,7 +173,7 @@ public class Board extends JPanel
 		int yt=Integer.valueOf(s.charAt(3));
 		int cap=Integer.valueOf(s.charAt(4));
 		*/
-		search.findmove(4);
+		search.findmove(2);
 		Move move=search.getMove();//new Move((xf<<3)+yf,(xt<<3)+yt,cap);
 		System.out.println(move);
 		board.makeMove(move);
