@@ -101,7 +101,7 @@ public class Search
 			alpha=x;
 		}
 		
-		LinkedList<Move> move=board.getMoves();
+		LinkedList<Move> move=board.getCaptures();
 		Iterator<Move> i=move.iterator();
 	
 		while(i.hasNext())
