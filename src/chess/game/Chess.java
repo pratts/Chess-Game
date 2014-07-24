@@ -7,6 +7,7 @@
 package chess.game;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,7 +76,7 @@ public class Chess
 		frame.add(BorderLayout.SOUTH,bottom);
 		frame.add(BorderLayout.CENTER,mid);
 		
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setSize(new Dimension(700,700));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
