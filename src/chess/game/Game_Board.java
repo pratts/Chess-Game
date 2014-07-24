@@ -235,7 +235,7 @@ public class Game_Board
 		
 		for(int i=0;i<64;i++)
 		{
-			System.out.println(i+":"+color[i]+":"+piece[i]);
+			//System.out.println(i+":"+color[i]+":"+piece[i]);
 			if(color[i]==side)
 			{
 				int p=piece[i];
@@ -258,12 +258,12 @@ public class Game_Board
 						}}catch(Exception e){}
 						
 						try{
-						if(i>=48 && color[i-8]==EMPTY)
+						if(color[i-8]==EMPTY)
 						{
 							//System.out.println(i+":"+(i-8));
 							pushMove(set,i,i-8,6);
 							try{
-							if(color[i-16]==EMPTY)
+							if(i>=48 && color[i-16]==EMPTY)
 							{
 								//System.out.println(i+":"+(i-16));
 								pushMove(set,i,i-16,6);
@@ -287,13 +287,13 @@ public class Game_Board
 						}}catch(Exception e){}
 						
 						try{
-						if(i>=48 && color[i+8]==EMPTY)
+						if( color[i+8]==EMPTY)
 						{
 							//System.out.println(i+":"+(i-8));
 							pushMove(set,i,i+8,6);
 							
 							try{
-							if(color[i+16]==EMPTY)
+							if(i<=15 &&color[i+16]==EMPTY)
 							{
 								//System.out.println(i+":"+(i-16));
 								pushMove(set,i,i+16,6);
@@ -517,7 +517,7 @@ public class Game_Board
 		int from=m.from;
 		int to=m.to;
 		
-		color[to]=side;
+		color[to]=color[from];
 		piece[to]=piece[from];
 		
 		color[from]=EMPTY;
