@@ -171,6 +171,7 @@ public class Board extends JPanel
 		m.setScore(Integer.valueOf(best.substring(4)));
 		board.makeMove(m);
 		movepieces(m);
+		isResult();
 	}
 	
 	protected void movepieces(Move m)
