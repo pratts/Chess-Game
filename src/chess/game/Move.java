@@ -33,8 +33,7 @@ public class Move implements Comparable<Object>
 	
 	public String toString()
 	{
-		//System.out.println((from>>3)+(from&7)+(":")+(to>>3)+(to&7));
-		return (from/8+""+from%8+("")+to/8+""+to%8+""+capture);
+		return (from/8+""+from%8+""+to/8+""+to%8);
 	}
 
 	@Override
