@@ -150,7 +150,7 @@ public class Board extends JPanel
 	
 	protected void computermove()
 	{
-		String best=search.alphabeta(-1000000, 1000000, 6, "", board.side);
+		String best=search.alphabeta(-2000, 2000, 6, "", board.side);
 		System.out.println(best);
 		
 		player=true;
