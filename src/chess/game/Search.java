@@ -17,13 +17,13 @@ public class Search
 	String alphabeta(int alpha,int beta,int depth,String move, int side)
 	{
 		LinkedList<Move> moves=board.getMoves();
-		System.out.println("AB"+move);
+		System.out.println("AB:"+move+":"+alpha+":"+beta);
 		if(depth==0)
 		{
 			//String temp=quiesce(alpha,beta,move,side);
 			//System.out.println(temp);
-			String temp=move+(board.evaluate()*(2*side-1));
-			return temp;
+			//String temp=move+(board.evaluate()*(2*side-1));
+			return quiesce(alpha,beta,move,side);
 		}
 		
 		if (ply >= maxply - 1)
@@ -91,37 +91,80 @@ public class Search
 		}
 	}
 	
-	String quiesce(int alpha,int beta,String move, int side)
+	String quiesce(int alpha,int beta,String move,int side)
 	{
 		LinkedList<Move> moves=board.getCaptures();
-		System.out.println("QU:"+move+":"+alpha+":"+beta);
-				
-		int x = board.evaluate();
-		if (x >= beta)
-			return move+beta;
-		if (x > alpha)
-			alpha = x;
-
+		System.out.println("QU"+move+":"+alpha+":"+beta);
+		if(moves.size()==0)
+		{
+			//String temp=quiesce(alpha,beta,move,side);
+			//System.out.println(temp);
+			String temp=move+(board.evaluate()*(2*side-1));
+			return temp;
+		}
+		
+		if (ply >= maxply - 1)
+            return move+(board.evaluate()*(2*side-1));
+		
 		Iterator<Move> i=moves.iterator();
 		while(i.hasNext())
 		{
 			Move temp=(Move)i.next();
 			if(!board.makeMove(temp))
 				continue;
+			ply++;
 			String tmp=quiesce(alpha,beta,temp.toString(),board.side);
 			int value=Integer.valueOf(tmp.substring(4));
 			board.undoMove(temp);
-			if(value>=beta)
+			ply--;
+			
+			if(value>beta)
 			{
-				move=tmp;
-				return move+beta*(2*side-1);
+				return tmp.substring(0,4)+beta*(2*side-1);
 			}
-			if(value>alpha)
+			//if (side==1) 
 			{
-				alpha=value;
-			}
+		        if (value<=beta) 
+		        {
+		        	beta=value; 
+		        	//if (depth==maxDepth) 
+		        	{
+		        		move=tmp.substring(0,4);
+		        	}
+		        }
+		    } 
+			//else 
+		    {
+		        if (value>alpha) 
+		        {
+		        	alpha=value; 
+		        	//if (depth==maxDepth) 
+		        	{
+		        		move=tmp.substring(0,4);
+		        	}
+		       	}
+		    }
+		            
+			if (alpha>=beta) 
+			{
+		        if (side==1) 
+				{
+					return move+beta*(2*side-1);
+				} 
+				else 
+				{
+					return move+alpha*(2*side-1);
+				}
+		    }
 		}
 	            
-		return move+alpha*(2*side-1);
+		if (side==1) 
+		{
+			return move+beta*(2*side-1);
+		} 
+		else 
+		{
+			return move+alpha*(2*side-1);
+		}
 	}
 }
