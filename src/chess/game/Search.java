@@ -7,6 +7,7 @@ public class Search
 {
 	Game_Board board;
 	int maxDepth=6;
+	int ply=0,maxply=32;
 	
 	Search(Game_Board b)
 	{
@@ -19,11 +20,18 @@ public class Search
 		System.out.println("AB"+move);
 		if(depth==0)
 		{
-			//String temp=quiesce(alpha,beta,move,side)+(board.evaluate()*(2*side-1));
+			//String temp=quiesce(alpha,beta,move,side);
 			//System.out.println(temp);
 			String temp=move+(board.evaluate()*(2*side-1));
 			return temp;
 		}
+		
+		if (ply >= maxply - 1)
+            return move+(board.evaluate()*(2*side-1));
+		
+		boolean check = board.inCheck(board.side);
+		if (check)
+			++depth;
 				
 		Iterator<Move> i=moves.iterator();
 		while(i.hasNext())
@@ -31,9 +39,11 @@ public class Search
 			Move temp=(Move)i.next();
 			if(!board.makeMove(temp))
 				continue;
+			ply++;
 			String tmp=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
 			int value=Integer.valueOf(tmp.substring(4));
 			board.undoMove(temp);
+			ply--;
 			
 			if (side==1) 
 			{
@@ -84,7 +94,7 @@ public class Search
 	String quiesce(int alpha,int beta,String move, int side)
 	{
 		LinkedList<Move> moves=board.getCaptures();
-		System.out.println("QU"+move);
+		System.out.println("QU:"+move+":"+alpha+":"+beta);
 				
 		int x = board.evaluate();
 		if (x >= beta)
@@ -104,7 +114,7 @@ public class Search
 			if(value>=beta)
 			{
 				move=tmp;
-				return move+beta;
+				return move+beta*(2*side-1);
 			}
 			if(value>alpha)
 			{
@@ -112,6 +122,6 @@ public class Search
 			}
 		}
 	            
-		return move+alpha;
+		return move+alpha*(2*side-1);
 	}
 }
