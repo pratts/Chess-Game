@@ -1,8 +1,6 @@
 package chess.game;
 
 import java.util.LinkedList;
-//import java.util.LinkedList;
-//import java.util.TreeSet;
 public class Game_Board 
 {
 	final int WHITE=1;						//Each white piece,square,side's color
@@ -235,7 +233,6 @@ public class Game_Board
 		
 		for(int i=0;i<64;i++)
 		{
-			//System.out.println(i+":"+color[i]+":"+piece[i]);
 			if(color[i]==side)
 			{
 				int p=piece[i];
@@ -246,26 +243,22 @@ public class Game_Board
 						try{
 						if(getColumn(i)!=7 && color[i-7]==BLACK)
 						{
-							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i-7,piece[i-7]);
 						}}catch(Exception e){}
 						
 						try{
 						if(getColumn(i)!=0 && color[i-9]==BLACK)
 						{
-							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i-9,piece[i-9]);
 						}}catch(Exception e){}
 						
 						try{
 						if(color[i-8]==EMPTY)
 						{
-							//System.out.println(i+":"+(i-8));
 							pushMove(set,i,i-8,6);
 							try{
 							if(i>=48 && color[i-16]==EMPTY)
 							{
-								//System.out.println(i+":"+(i-16));
 								pushMove(set,i,i-16,6);
 							}}catch(Exception e){}
 						}}catch(Exception e){}
@@ -275,27 +268,23 @@ public class Game_Board
 						try{
 						if(getColumn(i)!=7 && color[i+9]==WHITE)
 						{
-							//System.out.println(i+":"+(i-7));
 							pushMove(set,i,i+9,piece[i+9]);
 						}}catch(Exception e){}
 						
 						try{
 						if(getColumn(i)!=0 && color[i+7]==WHITE)
 						{
-							//System.out.println(i+":"+(i-9));
 							pushMove(set,i,i+7,piece[i+7]);
 						}}catch(Exception e){}
 						
 						try{
 						if( color[i+8]==EMPTY)
 						{
-							//System.out.println(i+":"+(i-8));
 							pushMove(set,i,i+8,6);
 							
 							try{
 							if(i<=15 &&color[i+16]==EMPTY)
 							{
-								//System.out.println(i+":"+(i-16));
 								pushMove(set,i,i+16,6);
 							}
 							}catch(Exception e){}
@@ -319,91 +308,6 @@ public class Game_Board
                                 break;
                             }
                             pushMove(set, i, n, 6);
-                            if (!slide[piece[i]])
-                                break;
-                        }
-					}
-				}
-			}
-		}
-		return set;
-	}
-	
-	LinkedList<Move> getCaptures()
-	{
-		LinkedList<Move> set=new LinkedList<Move>();
-		
-		for(int i=0;i<64;i++)
-		{
-			if(color[i]==side)
-			{
-				int p=piece[i];
-				if(p==PAWN)
-				{
-					if(side==WHITE)
-					{
-						try{
-						if(getColumn(i)!=7 && color[i-7]==BLACK)
-						{
-							//System.out.println(i+":"+(i-7));
-							pushMove(set,i,i-7,piece[i-7]);
-						}}catch(Exception e){}
-						
-						try{
-						if(getColumn(i)!=0 && color[i-9]==BLACK)
-						{
-							//System.out.println(i+":"+(i-9));
-							pushMove(set,i,i-9,piece[i-9]);
-						}}catch(Exception e){}
-						
-						try{
-						if(i<=15 && color[i-8]==EMPTY)
-						{
-							//System.out.println(i+":"+(i-8));
-							pushMove(set,i,i-8,0);
-						}}catch(Exception e){}
-					}
-					else
-					{
-						try{
-						if(getColumn(i)!=7 && color[i+9]==WHITE)
-						{
-							//System.out.println(i+":"+(i-7));
-							pushMove(set,i,i+9,piece[i+9]);
-						}}catch(Exception e){}
-						
-						try{
-						if(getColumn(i)!=0 && color[i+7]==WHITE)
-						{
-							//System.out.println(i+":"+(i-9));
-							pushMove(set,i,i+7,piece[i+7]);
-						}}catch(Exception e){}
-						
-						try{
-						if(i>=48 && color[i+8]==EMPTY)
-						{
-							//System.out.println(i+":"+(i-8));
-							pushMove(set,i,i+8,0);
-						}}catch(Exception e){}
-					}
-				}
-				
-				else
-				{
-					for (int j = 0; j < offsets[piece[i]]; ++j)
-					{
-                        for (int n = i;;) 
-                        {
-                            n = mailbox[mailbox64[n] + offset[piece[i]][j]];
-                            if (n == -1)
-                                break;
-                            if (color[n] != EMPTY) 
-                            {
-                                if (color[n] == xside)
-                                    pushMove(set, i, n, color[n]);
-                                break;
-                            }
-                           // pushMove(set, i, n, 0);
                             if (!slide[piece[i]])
                                 break;
                         }
@@ -439,12 +343,10 @@ public class Game_Board
 					{
 						if(getColumn(i)!=7 && i-7==sq)
 						{
-							//System.out.println(i+":"+(i-7));
 							return true;
 						}
 						if(getColumn(i)!=0 && i-9==sq)
 						{
-							//System.out.println(i+":"+(i-9));
 							return true;
 						}
 					}
@@ -452,12 +354,10 @@ public class Game_Board
 					{
 						if(getColumn(i)!=7 && i+9==sq)
 						{
-							//System.out.println(i+":"+(i-7));
 							return true;
 						}
 						if(getColumn(i)!=0 && i+7==sq)
 						{
-							//System.out.println(i+":"+(i-9));
 							return true;
 						}
 					}
@@ -502,16 +402,11 @@ public class Game_Board
 		{
 			m.setScore(piece[to]);
 		}
-		//System.out.println(m);
 		set.add(m);
-		//System.out.println(set.size());
 	}
 	
 	public boolean makeMove(Move m)
 	{		
-		//data[hply]=new History();
-		//data[hply].move=m;
-		
 		++hply;
 		
 		int from=m.from;
@@ -540,7 +435,6 @@ public class Game_Board
 		xside ^= 1;
 		
 		--hply;
-		//Move temp=data[hply].move;
 		
 		int from=m.from;
 		int to=m.to;
@@ -603,7 +497,7 @@ public class Game_Board
 		}
 		else
 		{
-			score[1]+=(pieceValue[BISHOP]*250);
+			score[1]+=250;
 		}
 		if(bbishopcount>=2)
 		{
@@ -611,7 +505,7 @@ public class Game_Board
 		}
 		else
 		{
-			score[0]+=(pieceValue[BISHOP]*250);
+			score[0]+=250;
 		}
 		
 		matw=score[1];
