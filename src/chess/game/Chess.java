@@ -97,7 +97,6 @@ public class Chess
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run()
 			{
-				System.out.println(System.getProperty("user.dir"));
 				chess=new Chess();
 				chess.createGui();
 			}
