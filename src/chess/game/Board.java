@@ -41,7 +41,6 @@ public class Board extends JPanel
 		board=b;
 		search=new Search(board);
 		
-		//System.out.println(chess);
 		JPanel boardpanel=new JPanel();
 		boardpanel.setLayout(new GridLayout(10,10));
 		
@@ -79,7 +78,6 @@ public class Board extends JPanel
 		if(computer)
 		{
 			chess.setStatus("It's computer's move.Wait!");
-			//System.out.println("It's computer's move.Wait!");
 			return;
 		}
 		
@@ -93,21 +91,18 @@ public class Board extends JPanel
 			if(piece==board.EMPTY)
 			{
 				chess.setStatus("You clicked on an empty square.");
-				//System.out.println("You clicked on an empty square.");
 				return;
 			}
 			//Check if a black piece is selected
 			else if(color==board.BLACK)
 			{
 				chess.setStatus("You clicked on an black piece.");
-				//System.out.println("Black piece selected");
 				return;
 			}
 			//Player has selected the white piece
 			else
 			{
 				chess.setStatus("Choose the destination");
-				//System.out.println("Choose the destination");
 				from=(x<<3)+y;
 				player=false;
 				return;
@@ -116,28 +111,26 @@ public class Board extends JPanel
 		
 		to=(x<<3)+y;
 		
+		//System.out.println(from+":"+to);
 		LinkedList<Move> set=board.getMoves();
-		//System.out.println(set.size());
 		boolean found=false;
-		//System.out.println(set.size());
 		Iterator<Move> i=set.iterator();
 		Move m=null;
 		while(i.hasNext())
 		{
 			m=(Move)i.next();
-			//System.out.println(m);
-			if(from==m.from && to==m.to)// && m.capture==board.piece[to])
+			if(from==m.from && to==m.to)
 			{
+				//System.out.println(from+":"+to);
 				found=true;
 				break;
 			}
-			//i.next();
 		}
 		
 		if(!found || !board.makeMove(m))
 		{
+			//System.out.println(m);
 			chess.setStatus("Illegal move");
-			//System.out.println("Illegal move");
 			player=true;
 			return;
 		}
@@ -149,46 +142,35 @@ public class Board extends JPanel
 			{
 				return;
 			}
-			player=true;
-			computer=true;
-			
-			for(int k=0;k<8;k++)
-			{
-				for(int j=0;j<8;j++)
-				{
-					System.out.print(board.color[(k*8)+(j%8)]+":"+board.piece[(k*8)+(j%8)]+" ");
-				}System.out.println();
-			}
-			
+			player=false;
+			computer=true;			
 			computermove();
 		}
 	}
 	
 	protected void computermove()
 	{
-		//String s=search.alphaBeta(4, 1000000, -1000000, "",0);
-		/*int xf=Integer.valueOf(s.charAt(0));
-		int yf=Integer.valueOf(s.charAt(1));
-		int xt=Integer.valueOf(s.charAt(2));
-		int yt=Integer.valueOf(s.charAt(3));
-		int cap=Integer.valueOf(s.charAt(4));
-		*/
-		search.findmove(6);
-		Move move=search.getMove();//new Move((xf<<3)+yf,(xt<<3)+yt,cap);
-		System.out.println(move);
-		board.makeMove(move);
-		for(int k=0;k<8;k++)
-		{
-			for(int j=0;j<8;j++)
-			{
-				System.out.print(board.color[(k*8)+(j%8)]+":"+board.piece[(k*8)+(j%8)]+" ");
-			}System.out.println();
-		}
-		movepieces(move);
-		isResult();
+		String best=search.alphabeta(-1000000, 1000000, 6, "", board.side);
+		System.out.println(best);
+		
 		player=true;
 		computer=false;
-		//System.out.println(board.evaluate());
+		
+		int fromrow=Integer.valueOf(best.charAt(0))-48;
+		int fromcol=Integer.valueOf(best.charAt(1))-48;
+		int torow=Integer.valueOf(best.charAt(2))-48;
+		int tocol=Integer.valueOf(best.charAt(3))-48;
+		System.out.println(fromrow+":"+fromcol+"-"+torow+":"+tocol);
+
+		int from=fromrow*8+fromcol;
+		int to=torow*8+tocol;
+		System.out.println(from+""+to);
+
+		int capture=board.piece[to];
+		Move m=new Move(from,to,capture);
+		m.setScore(Integer.valueOf(best.substring(4)));
+		board.makeMove(m);
+		movepieces(m);
 	}
 	
 	protected void movepieces(Move m)
@@ -198,8 +180,6 @@ public class Board extends JPanel
 		int torow=(m.to/8);
 		int tocol=(m.to%8);
 		
-		System.out.println(m.to+":"+m.from);
-		System.out.println(board.color[m.to]+":"+board.piece[m.to]);
 		square[torow][tocol].setIcon(new ImageIcon(imageurl[board.color[m.to]][board.piece[m.to]]));
 		square[fromrow][fromcol].setIcon(null);
 	}
@@ -216,7 +196,6 @@ public class Board extends JPanel
 		{
 			m=(Move)i.next();
 			boolean make=board.makeMove(m);
-			//System.out.println(make);
 			if(make)
 			{
 				board.undoMove(m);
@@ -295,7 +274,6 @@ public class Board extends JPanel
 		{
 			for(int j=0;j<6;j++)
 			{
-				//System.out.println(url+images[i][j]);
 				imageurl[i][j]=Toolkit.getDefaultToolkit().createImage(url+images[i][j]);
 			}
 		}
@@ -305,6 +283,8 @@ public class Board extends JPanel
 	{
 		board=b;
 		search=new Search(board);
+		player=true;
+		computer=false;
 		resetboard();
 	}
 	
