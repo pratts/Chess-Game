@@ -318,6 +318,84 @@ public class Game_Board
 		return set;
 	}
 	
+	LinkedList<Move> getCaptures()
+	{
+		LinkedList<Move> set=new LinkedList<Move>();
+		
+		for(int i=0;i<64;i++)
+		{
+			if(color[i]==side)
+			{
+				int p=piece[i];
+				if(p==PAWN)
+				{
+					if(side==WHITE)
+					{
+						try{
+						if(getColumn(i)!=7 && color[i-7]==BLACK)
+						{
+							pushMove(set,i,i-7,piece[i-7]);
+						}}catch(Exception e){}
+						
+						try{
+						if(getColumn(i)!=0 && color[i-9]==BLACK)
+						{
+							pushMove(set,i,i-9,piece[i-9]);
+						}}catch(Exception e){}
+						
+						try{
+						if(color[i-8]==EMPTY)
+						{
+							pushMove(set,i,i-8,6);
+						}}catch(Exception e){}
+					}
+					else
+					{
+						try{
+						if(getColumn(i)!=7 && color[i+9]==WHITE)
+						{
+							pushMove(set,i,i+9,piece[i+9]);
+						}}catch(Exception e){}
+						
+						try{
+						if(getColumn(i)!=0 && color[i+7]==WHITE)
+						{
+							pushMove(set,i,i+7,piece[i+7]);
+						}}catch(Exception e){}
+						
+						try{
+						if( color[i+8]==EMPTY)
+						{
+							pushMove(set,i,i+8,6);
+						}}catch(Exception e){}
+					}
+				}
+				
+				else
+				{
+					for (int j = 0; j < offsets[piece[i]]; ++j)
+					{
+                        for (int n = i;;) 
+                        {
+                            n = mailbox[mailbox64[n] + offset[piece[i]][j]];
+                            if (n == -1)
+                                break;
+                            if (color[n] != EMPTY) 
+                            {
+                                if (color[n] == xside)
+                                    pushMove(set, i, n, piece[n]);
+                                break;
+                            }
+                            if (!slide[piece[i]])
+                                break;
+                        }
+					}
+				}
+			}
+		}
+		return set;
+	}
+	
 	boolean inCheck(int s)
 	{
 		for(int i=0;i<64;i++)
