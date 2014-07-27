@@ -18,12 +18,13 @@ public class Search
 	{
 		LinkedList<Move> moves=board.getMoves();
 		System.out.println("AB:"+move+":"+alpha+":"+beta);
-		if(depth==0)
+		if(depth==0 || moves.size()==0)
 		{
 			//String temp=quiesce(alpha,beta,move,side);
 			//System.out.println(temp);
-			//String temp=move+(board.evaluate()*(2*side-1));
-			return quiesce(alpha,beta,move,side);
+			String temp=move+(board.evaluate()*(2*side-1));
+			return temp;
+			//return quiesce(alpha,beta,move,side);
 		}
 		
 		if (ply >= maxply - 1)
