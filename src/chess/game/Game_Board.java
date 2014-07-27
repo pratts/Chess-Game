@@ -642,13 +642,6 @@ public class Game_Board
 			}
 		}
 		
-		if(side==WHITE)
-		{
-			return (score[1]-score[0]);
-		}
-		else
-		{
-			return (score[0]-score[1]);
-		}
+		return (score[1]-score[0]);
 	}
 }
