@@ -6,14 +6,17 @@ and hence the search takes time that might be more than usual.The evaluation met
 uses very basic evaluation technique to calculate board score.Special moves like 
 en-passant,pawn promotion and castling are yet to be covered.
 
+
 To run the project,either type:
-	java -jar Chess-Game.jar 
+	
+	java -jar Chess-Game.jar
+	
 on the console.Make sure the jar file is present in the current directory of the console.
 
 If you have eclipse,you can import the project in eclipse and run it.
 
 
 Things that need improvements:
-1.) Special moves will be included in the game.
-2.) Board evaluation will be improved.
-3.) Search algorithm will be improved.
+	* Special moves will be included in the game.
+	* Board evaluation will be improved.
+	* Search algorithm will be improved.
