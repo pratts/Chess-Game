@@ -188,6 +188,7 @@ public class Game_Board
     	-50,-30,-30,-30,-30,-30,-30,-50
    		};
 	
+	//To find score for black.e.g black pawn will be pawn[flip[i]]
 	int flip[] = {
 		56,  57,  58,  59,  60,  61,  62,  63,
 		48,  49,  50,  51,  52,  53,  54,  55,
@@ -225,7 +226,7 @@ public class Game_Board
 		return (i%7);
 	}
 	
-	//getMoves method returns the set of possible moves.
+	//getMoves method returns the set of pseudo legal moves.
 	LinkedList<Move> getMoves()
 	{
 		LinkedList<Move> set=new LinkedList<Move>();
@@ -317,6 +318,7 @@ public class Game_Board
 		return set;
 	}
 	
+	//It creates a list of legal captures
 	LinkedList<Move> getCaptures()
 	{
 		LinkedList<Move> set=new LinkedList<Move>();
@@ -395,6 +397,7 @@ public class Game_Board
 		return set;
 	}
 	
+	//find if the king of side s is in check 
 	boolean inCheck(int s)
 	{
 		for(int i=0;i<64;i++)
@@ -407,6 +410,7 @@ public class Game_Board
 		return true;
 	}
 	
+	//check if a square sq is attacked by side s
 	boolean attack(int sq,int s)
 	{
 		for(int i=0;i<64;i++)
@@ -468,6 +472,7 @@ public class Game_Board
 		return false;
 	}
 	
+	//to push a move on the list so that the list can be traversed later for pseudo-legal moves
 	void pushMove(LinkedList<Move> set,int from,int to,int capture)
 	{
 		Move m=new Move(from,to,capture);
@@ -482,6 +487,7 @@ public class Game_Board
 		set.add(m);
 	}
 	
+	//To make a move on the board
 	public boolean makeMove(Move m)
 	{		
 		++hply;
@@ -506,6 +512,7 @@ public class Game_Board
 		return true;
 	}
 	
+	//To take back the move made on the board
 	public void undoMove(Move m)
 	{
 		side ^= 1;
@@ -530,9 +537,12 @@ public class Game_Board
 		piece[to]=capture;
 	}
 	
+	//To evaluate the score according to the current board  configuration.
 	int evaluate()
 	{
 		int score[]=new int[2],wbishopcount=0,bbishopcount=0,matw=0,matb=0;
+		
+		//first calculate the score related to all the pieces present on the board
 		for(int i=0;i<64;i++)
 		{
 			if(color[i]==WHITE)
@@ -568,6 +578,8 @@ public class Game_Board
 				}
 			}
 		}
+		
+		//2 Bishops are valuable than only 1
 		if(wbishopcount>=2)
 		{
 			score[1]+=(pieceValue[BISHOP]*wbishopcount);
@@ -589,6 +601,7 @@ public class Game_Board
 		matb=score[0];
 		
 		
+		//Evaluate on the basis of the current board position 
 		for(int i=0;i<64;i++)
 		{
 			if(color[i]==WHITE)
