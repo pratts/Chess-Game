@@ -109,9 +109,9 @@ public class Board extends JPanel
 			}
 		}
 		
+		//to=(8*x)+y;
 		to=(x<<3)+y;
 		
-		//System.out.println(from+":"+to);
 		LinkedList<Move> set=board.getMoves();
 		boolean found=false;
 		Iterator<Move> i=set.iterator();
@@ -121,7 +121,6 @@ public class Board extends JPanel
 			m=(Move)i.next();
 			if(from==m.from && to==m.to)
 			{
-				//System.out.println(from+":"+to);
 				found=true;
 				break;
 			}
@@ -129,7 +128,6 @@ public class Board extends JPanel
 		
 		if(!found || !board.makeMove(m))
 		{
-			//System.out.println(m);
 			chess.setStatus("Illegal move");
 			player=true;
 			return;
@@ -148,14 +146,18 @@ public class Board extends JPanel
 		}
 	}
 	
+	//To start the computer's move
 	protected void computermove()
 	{
+		//alphabeta method searches for the computer's best move
 		String best=search.alphabeta(-2000, 2000, 6, "", board.side);
 		System.out.println(best);
 		
+		//change the boolean values so the player can play again
 		player=true;
 		computer=false;
 		
+		//Extract the from,to coordinates from the move
 		int fromrow=Integer.valueOf(best.charAt(0))-48;
 		int fromcol=Integer.valueOf(best.charAt(1))-48;
 		int torow=Integer.valueOf(best.charAt(2))-48;
@@ -166,14 +168,21 @@ public class Board extends JPanel
 		int to=torow*8+tocol;
 		System.out.println(from+""+to);
 
+		//Create a move object for makeMove and movepieces functions
 		int capture=board.piece[to];
 		Move m=new Move(from,to,capture);
 		m.setScore(Integer.valueOf(best.substring(4)));
 		board.makeMove(m);
 		movepieces(m);
+		
+		//Change the status
+		chess.setStatus("Player's turn");
+		
+		//check for result
 		isResult();
 	}
 	
+	//To move pieces on the board
 	protected void movepieces(Move m)
 	{
 		int fromrow=(m.from/8);
@@ -185,6 +194,7 @@ public class Board extends JPanel
 		square[fromrow][fromcol].setIcon(null);
 	}
 	
+	//to check if there is check/checkmate/stalemate condition
 	public boolean isResult()
 	{
 		LinkedList<Move> list=board.getMoves();
@@ -280,6 +290,7 @@ public class Board extends JPanel
 		}
 	}
 	
+	//To reset and draw the board again
 	protected void reset(Game_Board b)
 	{
 		board=b;
@@ -289,6 +300,7 @@ public class Board extends JPanel
 		resetboard();
 	}
 	
+	//Iterate through the board and draw pieces on it
 	protected void resetboard()
 	{
 		System.out.println("Reset");
