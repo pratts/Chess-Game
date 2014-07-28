@@ -73,6 +73,8 @@ public class Square extends JPanel implements MouseListener
 		}
 	}
 	
+	//this method is called each time a square is clicked and it passes
+	//the coordinates of square to the function as x,y
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		board.selected(x,y);
