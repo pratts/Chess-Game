@@ -15,7 +15,6 @@ public class Game_Board
 	int side=WHITE;
 	int xside=BLACK;
 	int hply=0;
-	History data[]=new History[400];
 	
 	//This is the constant variable that store the position of each black and white square on the board
 	 final int BOARD_COLOR_POSITION[]={
