@@ -81,12 +81,14 @@ public class Chess
 		frame.setVisible(true);
 	}
 	
+	//reset method is executed when the New Game button is clicked and it'll reset the board
 	protected void reset()
 	{
 		game=new Game_Board();
 		board.reset(game);
 	}
 	
+	//To set the current status of the game at the bottom
 	protected void setStatus(String label)
 	{
 		status.setText(label);
