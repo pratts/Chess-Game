@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="Chess Project" default="dist">
+	<property name="src" value="src"/>
+	<property name="bin" value="bin"/>
+	<property name="dist" value="dist"/>
+
+	<target name="clean">
+		<delete dir="${bin}"/>
+		<delete dir="${dist}"/>
+	</target>
+
+	<target name="init" depends="clean">
+		<tstamp/>
+		<mkdir dir="${bin}"/>	
+	</target>
+
+	<target name="compile" depends="init" description="compile the source">
+		<javac includeantruntime="false" srcdir="${src}"/>		
+
+		<copy  todir="${bin}">
+			<fileset dir="${src}" excludes="**/*.java"/>
+		</copy>
+
+		<delete includeemptydirs="true">
+			<fileset dir="${src}" includes="**/*.class"/>
+		</delete>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<mkdir dir="${dist}/lib"/>
+		<jar jarfile="${dist}/lib/Chess-Game.jar" basedir="${bin}/">
+			<manifest>
+      				<attribute name="Main-Class" value="chess/game/Chess"/>
+     			</manifest>
+		</jar>
+	</target>
+</project>
