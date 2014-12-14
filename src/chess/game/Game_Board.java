@@ -236,6 +236,7 @@ public class Game_Board
 			if(color[i]==side)
 			{
 				int p=piece[i];
+				//moves for pawn
 				if(p==PAWN)
 				{
 					if(side==WHITE)
@@ -292,6 +293,7 @@ public class Game_Board
 					}
 				}
 				
+				//moves for king,queen,bishop,rook and knight (except castling,pawn promotion and en passant)
 				else
 				{
 					for (int j = 0; j < offsets[piece[i]]; ++j)
