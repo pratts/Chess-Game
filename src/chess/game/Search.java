@@ -12,6 +12,8 @@ public class Search
 	Game_Board board;
 	int maxDepth=6;
 	int ply=0,maxply=32;
+	long secondsStart = 0;
+	public String moveStr = "";
 	
 	Search(Game_Board b)
 	{
@@ -21,6 +23,10 @@ public class Search
 	//To search for the best move
 	String alphabeta(int alpha,int beta,int depth,String move, int side)
 	{
+		if((System.currentTimeMillis() - secondsStart) > 3*1000) {
+			System.out.println("final:"+moveStr);
+			return moveStr;
+		}
 		//generate all the legal moves at each recursion step
 		LinkedList<Move> moves=board.getMoves();
 		System.out.println("AB:"+move+":"+alpha+":"+beta);
@@ -28,13 +34,17 @@ public class Search
 		//if we have reached the node or there is no legal move
 		if(depth==0 || moves.size()==0)
 		{
-			String temp=move+(board.evaluate()*(2*side-1));
-			return temp;
+			moveStr=move+(board.evaluate()*(2*side-1));
+			System.out.println("first:"+moveStr);
+			return moveStr;
 		}
 		
 		//if the number of times a move can be made reaches the maximum value
-		if (ply >= maxply - 1)
-            return move+(board.evaluate()*(2*side-1));
+		if (ply >= maxply - 1) {
+            moveStr = move+(board.evaluate()*(2*side-1));
+            System.out.println("second:"+moveStr);
+            return moveStr;
+		}
 		
 		//increase the tree depth if king is in check 
 		boolean check = board.inCheck(board.side);
@@ -51,8 +61,9 @@ public class Search
 			if(!board.makeMove(temp))
 				continue;
 			ply++;
-			String tmp=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
-			int value=Integer.valueOf(tmp.substring(4));
+			moveStr=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
+			System.out.println("third:"+moveStr);
+			int value=Integer.valueOf(moveStr.substring(4));
 			board.undoMove(temp);
 			ply--;
 			
@@ -65,7 +76,7 @@ public class Search
 		        	beta=value; 
 		        	if (depth==maxDepth) 
 		        	{
-		        		move=tmp.substring(0,4);
+		        		move=moveStr.substring(0,4);
 		        	}
 		        }
 		    } 
@@ -77,7 +88,7 @@ public class Search
 		        	alpha=value; 
 		        	if (depth==maxDepth) 
 		        	{
-		        		move=tmp.substring(0,4);
+		        		move=moveStr.substring(0,4);
 		        	}
 		       	}
 		    }
@@ -87,11 +98,15 @@ public class Search
 			{
 		        if (side==1) 
 				{
-					return move+beta;
+		        	moveStr =  move+beta;
+		        	System.out.println("fourth:"+moveStr);
+		        	return moveStr;
 				} 
 				else 
 				{
-					return move+alpha;
+					moveStr = move+alpha;
+					System.out.println("fifth:"+moveStr);
+					return moveStr;
 				}
 		    }
 		}
@@ -99,12 +114,24 @@ public class Search
 		//if min node,return beta value
 		if (side==1) 
 		{
-			return move+beta;
+			moveStr = move+beta;
+			System.out.println("sixth:"+moveStr);
+			return moveStr;
 		} 
 		//if max node return alpha value
 		else 
 		{
-			return move+alpha;
+			moveStr = move+alpha;
+			System.out.println("seventh:"+moveStr);
+			return moveStr;
 		}
+	}
+
+	public long getSecondsStart() {
+		return secondsStart;
+	}
+
+	public void setSecondsStart(long secondsStart) {
+		this.secondsStart = secondsStart;
 	}
 }

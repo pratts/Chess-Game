@@ -150,6 +150,7 @@ public class Board extends JPanel
 	protected void computermove()
 	{
 		//alphabeta method searches for the computer's best move
+		search.setSecondsStart(System.currentTimeMillis());
 		String best=search.alphabeta(-2000, 2000, 6, "", board.side);
 		System.out.println(best);
 		
