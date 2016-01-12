@@ -25,6 +25,9 @@ public class Search
 	{
 		if((System.currentTimeMillis() - secondsStart) > 3*1000) {
 			System.out.println("final:"+moveStr);
+			System.out.println("final move:"+move);
+			System.out.println("final beta:"+beta);
+			System.out.println("final alpha:"+alpha);
 			return moveStr;
 		}
 		//generate all the legal moves at each recursion step
@@ -36,6 +39,9 @@ public class Search
 		{
 			moveStr=move+(board.evaluate()*(2*side-1));
 			System.out.println("first:"+moveStr);
+			System.out.println("first move:"+move);
+			System.out.println("first beta:"+beta);
+			System.out.println("first alpha:"+alpha);
 			return moveStr;
 		}
 		
@@ -43,6 +49,9 @@ public class Search
 		if (ply >= maxply - 1) {
             moveStr = move+(board.evaluate()*(2*side-1));
             System.out.println("second:"+moveStr);
+            System.out.println("second move:"+move);
+			System.out.println("second beta:"+beta);
+			System.out.println("second alpha:"+alpha);
             return moveStr;
 		}
 		
@@ -61,13 +70,19 @@ public class Search
 			if(!board.makeMove(temp))
 				continue;
 			ply++;
-			moveStr=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
-			System.out.println("third:"+moveStr);
-			int value=Integer.valueOf(moveStr.substring(4));
+			String tmp=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
+			System.out.println("third:"+tmp);
+			System.out.println("third move:"+temp.toString());
+			System.out.println("third beta:"+beta);
+			System.out.println("third alpha:"+alpha);
+			System.out.println("third side:"+board.side);
+			int value=Integer.valueOf(tmp.substring(4));
 			board.undoMove(temp);
+			System.out.println("third side:"+board.side);
 			ply--;
-			
+			move = temp.toString();
 			//if player's move
+			System.out.println("1-->"+move);
 			if (side==1) 
 			{
 				//if the calculated value is less than minimum upper bound
@@ -76,7 +91,7 @@ public class Search
 		        	beta=value; 
 		        	if (depth==maxDepth) 
 		        	{
-		        		move=moveStr.substring(0,4);
+		        		move=tmp.substring(0,4);
 		        	}
 		        }
 		    } 
@@ -88,11 +103,11 @@ public class Search
 		        	alpha=value; 
 		        	if (depth==maxDepth) 
 		        	{
-		        		move=moveStr.substring(0,4);
+		        		move=tmp.substring(0,4);
 		        	}
 		       	}
 		    }
-		            
+			System.out.println("2-->"+move);
 			//If both the bounds for the null set
 			if (alpha>=beta) 
 			{
@@ -100,12 +115,16 @@ public class Search
 				{
 		        	moveStr =  move+beta;
 		        	System.out.println("fourth:"+moveStr);
+		        	System.out.println("fourth move:"+move);
+					System.out.println("fourth beta:"+beta);
 		        	return moveStr;
 				} 
 				else 
 				{
 					moveStr = move+alpha;
 					System.out.println("fifth:"+moveStr);
+					System.out.println("fifth move:"+move);
+					System.out.println("fifth alpha:"+alpha);
 					return moveStr;
 				}
 		    }
@@ -116,13 +135,17 @@ public class Search
 		{
 			moveStr = move+beta;
 			System.out.println("sixth:"+moveStr);
+			System.out.println("sixth move:"+move);
+			System.out.println("sixth beta:"+beta);
 			return moveStr;
 		} 
 		//if max node return alpha value
 		else 
 		{
 			moveStr = move+alpha;
-			System.out.println("seventh:"+moveStr);
+			System.out.println("seventh moveStr:"+moveStr);
+			System.out.println("seventh move:"+move);
+			System.out.println("seventh alpha:"+alpha);
 			return moveStr;
 		}
 	}
