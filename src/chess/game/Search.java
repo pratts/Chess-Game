@@ -70,7 +70,8 @@ public class Search
 			if(!board.makeMove(temp))
 				continue;
 			ply++;
-			String tmp=alphabeta(alpha,beta,depth-1,temp.toString(),board.side);
+			move = temp.toString();
+			String tmp=alphabeta(alpha,beta,depth-1,move,board.side);
 			System.out.println("third:"+tmp);
 			System.out.println("third move:"+temp.toString());
 			System.out.println("third beta:"+beta);
@@ -80,7 +81,7 @@ public class Search
 			board.undoMove(temp);
 			System.out.println("third side:"+board.side);
 			ply--;
-			move = temp.toString();
+			//move = temp.toString();
 			//if player's move
 			System.out.println("1-->"+move);
 			if (side==1) 
@@ -89,8 +90,10 @@ public class Search
 		        if (value<=beta) 
 		        {
 		        	beta=value; 
+		        	System.out.println("inside beta=value");
 		        	if (depth==maxDepth) 
 		        	{
+		        		System.out.println("inside first move init");
 		        		move=tmp.substring(0,4);
 		        	}
 		        }
@@ -101,8 +104,10 @@ public class Search
 		        if (value>alpha) 
 		        {
 		        	alpha=value; 
+		        	System.out.println("inside alpha=value");
 		        	if (depth==maxDepth) 
 		        	{
+		        		System.out.println("inside second move init");
 		        		move=tmp.substring(0,4);
 		        	}
 		       	}
